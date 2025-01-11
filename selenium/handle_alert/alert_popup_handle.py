@@ -19,6 +19,7 @@ driver.find_element(By.XPATH, "//input[@title='Sign in']").click()
 time.sleep(10)
 
 # Handle the alert that appears
+print(Alert(driver).text)
 Alert(driver).accept()
 
 # Ensure the browser is closed regardless of the outcome
