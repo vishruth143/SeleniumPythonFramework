@@ -17,7 +17,7 @@
 #   - alert.send_keys(text)          : Types text into a prompt alert's input field.
 #
 # In this example, the script:
-#   1. Triggers a simple alert on the Rediff login page by clicking sign in without credentials.
+#   1. Triggers a simple alert on the Rediff test_login.py page by clicking sign in without credentials.
 #   2. Navigates to a test page and handles a JS Alert, JS Confirm, and JS Prompt in sequence.
 
 import time
@@ -32,7 +32,7 @@ driver = webdriver.Chrome()
 # Maximize the browser window
 driver.maximize_window()
 
-# Navigate to the Rediff login page
+# Navigate to the Rediff test_login.py page
 driver.get("https://mail.rediff.com/cgi-bin/login.cgi")
 
 # Click the "Sign in" button without entering credentials
