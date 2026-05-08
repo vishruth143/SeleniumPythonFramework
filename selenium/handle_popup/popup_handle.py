@@ -1,3 +1,25 @@
+# Tutorial: Handling Popup Windows in Selenium
+# ----------------------------------------------
+# This script demonstrates how to handle browser popup windows (new tabs/windows)
+# that open when interacting with web elements.
+#
+# Key Concepts:
+#   - driver.current_window_handle  : Returns the handle (unique ID) of the currently focused window.
+#   - driver.window_handles          : Returns a list of all open window handles in the session.
+#   - driver.switch_to.window(handle): Switches WebDriver focus to the specified window.
+#   - driver.close()                 : Closes the currently focused window (not the entire session).
+#   - driver.quit()                  : Closes all windows and ends the WebDriver session.
+#
+# Typical Workflow for Handling Popups:
+#   1. Store the main window handle before triggering the popup.
+#   2. Click the element that opens the new window/tab.
+#   3. Iterate over all window handles and switch to the one that is not the main window.
+#   4. Perform any required actions in the popup window.
+#   5. Close the popup and switch focus back to the main window.
+#
+# In this example, the script opens a new window via a link click, reads its title
+# and content, closes it, and then switches back to the main window.
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time

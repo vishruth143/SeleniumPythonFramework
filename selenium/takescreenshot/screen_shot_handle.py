@@ -1,3 +1,25 @@
+# Tutorial: Taking Screenshots in Selenium
+# ------------------------------------------
+# This script demonstrates how to capture and save screenshots of a web page
+# using Selenium WebDriver. Screenshots are useful for visual validation,
+# debugging test failures, and generating test reports.
+#
+# Key Method:
+#   - driver.save_screenshot(file_path) : Captures the current browser viewport
+#                                         and saves it as a PNG image to the given path.
+#
+# Best Practices:
+#   - Use os.path.join() to build file paths in a cross-platform compatible way.
+#   - Use os.makedirs(path, exist_ok=True) to ensure the output directory exists
+#     before saving, without raising an error if it already exists.
+#   - Wrap screenshot logic in a try/except block to handle errors gracefully.
+#   - Organize screenshots into a dedicated folder (e.g., "screenshots/") for easy access.
+#
+# In this example, the script:
+#   1. Launches Chrome and navigates to Google.
+#   2. Calls a reusable take_screenshot() function that ensures the output
+#      directory exists and saves the screenshot as a PNG file.
+
 import os
 
 from selenium import webdriver

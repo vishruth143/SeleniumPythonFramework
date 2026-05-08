@@ -1,2 +1,2 @@
-selenium==4.27.1            # For browser automation
-requests==2.32.3            # For making HTTP requests
+selenium==4.43.0            # For browser automation
+requests==2.33.1            # For making HTTP requests

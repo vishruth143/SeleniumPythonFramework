@@ -1,3 +1,25 @@
+# Tutorial: Handling Alerts in Selenium
+# ----------------------------------------
+# This script demonstrates how to handle different types of JavaScript alerts
+# in Selenium WebDriver.
+#
+# Types of Alerts:
+#   1. Simple Alert    : Displays a message with an "OK" button.
+#   2. Confirm Alert   : Displays a message with "OK" and "Cancel" buttons.
+#   3. Prompt Alert    : Displays a message with a text input field plus "OK" and "Cancel".
+#
+# Key Methods for Alert Handling:
+#   - driver.switch_to.alert         : Switches focus to the currently active alert.
+#   - Alert(driver)                  : Alternative way to access the active alert.
+#   - alert.text                     : Retrieves the message text displayed in the alert.
+#   - alert.accept()                 : Clicks the "OK" button (accepts the alert).
+#   - alert.dismiss()                : Clicks the "Cancel" button (dismisses the alert).
+#   - alert.send_keys(text)          : Types text into a prompt alert's input field.
+#
+# In this example, the script:
+#   1. Triggers a simple alert on the Rediff login page by clicking sign in without credentials.
+#   2. Navigates to a test page and handles a JS Alert, JS Confirm, and JS Prompt in sequence.
+
 import time
 
 from selenium import webdriver
