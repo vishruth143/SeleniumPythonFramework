@@ -4,20 +4,22 @@ import requests
 from deepdiff import DeepDiff
 
 # ── Storage folder (relative to this file) ────────────────────────────────
-RESPONSES_DIR = os.path.join(os.path.dirname(__file__), "responses")
+RESPONSES_DIR = os.path.join(os.path.dirname(__file__), "../responses")
 
-# ── Endpoints to test ─────────────────────────────────────────────────────
+# ── Endpoints to test (JSONPlaceholder) ───────────────────────────────────
 # Each entry: (api_name, url, method, payload)
 ENDPOINTS = [
-    ("users_list",      "https://reqres.in/api/users?page=1", "GET",  None),
-    ("single_user",     "https://reqres.in/api/users/2",      "GET",  None),
-    ("users_not_found", "https://reqres.in/api/users/23",     "GET",  None),
-    ("create_user",     "https://reqres.in/api/users",        "POST", {"name": "morpheus", "job": "leader"}),
-    ("list_resources",  "https://reqres.in/api/unknown",      "GET",  None),
+    ("get_all_posts",   "https://jsonplaceholder.typicode.com/posts",        "GET",  None),
+    ("get_single_post", "https://jsonplaceholder.typicode.com/posts/1",      "GET",  None),
+    ("get_comments",    "https://jsonplaceholder.typicode.com/posts/1/comments", "GET", None),
+    ("get_all_users",   "https://jsonplaceholder.typicode.com/users",        "GET",  None),
+    ("create_post",     "https://jsonplaceholder.typicode.com/posts",        "POST", {"title": "foo", "body": "bar", "userId": 1}),
+    ("get_todos",       "https://jsonplaceholder.typicode.com/todos?userId=1", "GET", None),
+    ("get_albums",      "https://jsonplaceholder.typicode.com/albums/1",     "GET",  None),
 ]
 
 # ── Keys to ignore during comparison (dynamic / always-changing fields) ───
-IGNORED_KEYS = {"createdAt", "updatedAt", "id"}
+IGNORED_KEYS = {"id"}
 
 
 def get_paths(api_name):

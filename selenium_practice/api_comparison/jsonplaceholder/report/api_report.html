@@ -143,8 +143,8 @@
 </head>
 <body>
 
-  <h1>🔌 ReqRes API Comparison Report</h1>
-  <p class="subtitle">Deep response comparison — Baseline vs Current &bull; reqres.in</p>
+  <h1>🔌 JSONPlaceholder API Comparison Report</h1>
+  <p class="subtitle">Deep response comparison — Baseline vs Current &bull; jsonplaceholder.typicode.com</p>
 
   <div id="report"></div>
 
@@ -152,30 +152,40 @@
 
   <script>
     const APIS = [
-      { name: "users_list",      method: "GET",
-        baselineUrl: "../responses/users_list/users_list_baseline.json",
-        currentUrl:  "../responses/users_list/users_list_current.json",
-        diffUrl:     "../responses/users_list/users_list_diff.json" },
+      { name: "get_all_posts",   method: "GET",
+        baselineUrl: "../responses/get_all_posts/get_all_posts_baseline.json",
+        currentUrl:  "../responses/get_all_posts/get_all_posts_current.json",
+        diffUrl:     "../responses/get_all_posts/get_all_posts_diff.json" },
 
-      { name: "single_user",     method: "GET",
-        baselineUrl: "../responses/single_user/single_user_baseline.json",
-        currentUrl:  "../responses/single_user/single_user_current.json",
-        diffUrl:     "../responses/single_user/single_user_diff.json" },
+      { name: "get_single_post", method: "GET",
+        baselineUrl: "../responses/get_single_post/get_single_post_baseline.json",
+        currentUrl:  "../responses/get_single_post/get_single_post_current.json",
+        diffUrl:     "../responses/get_single_post/get_single_post_diff.json" },
 
-      { name: "users_not_found", method: "GET",
-        baselineUrl: "../responses/users_not_found/users_not_found_baseline.json",
-        currentUrl:  "../responses/users_not_found/users_not_found_current.json",
-        diffUrl:     "../responses/users_not_found/users_not_found_diff.json" },
+      { name: "get_comments",    method: "GET",
+        baselineUrl: "../responses/get_comments/get_comments_baseline.json",
+        currentUrl:  "../responses/get_comments/get_comments_current.json",
+        diffUrl:     "../responses/get_comments/get_comments_diff.json" },
 
-      { name: "create_user",     method: "POST",
-        baselineUrl: "../responses/create_user/create_user_baseline.json",
-        currentUrl:  "../responses/create_user/create_user_current.json",
-        diffUrl:     "../responses/create_user/create_user_diff.json" },
+      { name: "get_all_users",   method: "GET",
+        baselineUrl: "../responses/get_all_users/get_all_users_baseline.json",
+        currentUrl:  "../responses/get_all_users/get_all_users_current.json",
+        diffUrl:     "../responses/get_all_users/get_all_users_diff.json" },
 
-      { name: "list_resources",  method: "GET",
-        baselineUrl: "../responses/list_resources/list_resources_baseline.json",
-        currentUrl:  "../responses/list_resources/list_resources_current.json",
-        diffUrl:     "../responses/list_resources/list_resources_diff.json" },
+      { name: "create_post",     method: "POST",
+        baselineUrl: "../responses/create_post/create_post_baseline.json",
+        currentUrl:  "../responses/create_post/create_post_current.json",
+        diffUrl:     "../responses/create_post/create_post_diff.json" },
+
+      { name: "get_todos",       method: "GET",
+        baselineUrl: "../responses/get_todos/get_todos_baseline.json",
+        currentUrl:  "../responses/get_todos/get_todos_current.json",
+        diffUrl:     "../responses/get_todos/get_todos_diff.json" },
+
+      { name: "get_albums",      method: "GET",
+        baselineUrl: "../responses/get_albums/get_albums_baseline.json",
+        currentUrl:  "../responses/get_albums/get_albums_current.json",
+        diffUrl:     "../responses/get_albums/get_albums_diff.json" },
     ];
 
     async function fetchJSON(url) {
@@ -241,7 +251,7 @@
 
       const header = document.createElement("div");
       header.className = "site-header";
-      header.innerHTML = `🌐 ReqRes Endpoints &nbsp;<span style="font-weight:normal;font-size:13px;">https://reqres.in</span>`;
+      header.innerHTML = `🌐 JSONPlaceholder Endpoints &nbsp;<span style="font-weight:normal;font-size:13px;">https://jsonplaceholder.typicode.com</span>`;
       const badge = document.createElement("span");
       badge.className   = "status-banner pending";
       badge.textContent = "⏳ Loading…";
