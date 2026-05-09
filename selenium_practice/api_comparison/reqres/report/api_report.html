@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ReqRes API Comparison Report</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      padding: 30px;
+    }
+
+    h1 { text-align: center; font-size: 26px; color: #2c3e50; margin-bottom: 6px; }
+    .subtitle { text-align: center; color: #777; font-size: 13px; margin-bottom: 28px; }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #2c3e50;
+      color: #fff;
+      padding: 13px 20px;
+      border-radius: 8px 8px 0 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .status-banner {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-left: auto;
+    }
+    .status-banner.match   { background:#d4edda; color:#155724; border:1px solid #28a745; }
+    .status-banner.diff    { background:#f8d7da; color:#721c24; border:1px solid #dc3545; }
+    .status-banner.pending { background:#e2e3e5; color:#555;    border:1px solid #aaa;    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    .report-table thead th {
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: bold;
+      color: #fff;
+      text-align: center;
+    }
+
+    th.col-api      { background:#34495e; width:10%; text-align:left; padding-left:14px; }
+    th.col-method   { background:#8e44ad; width:6%;  }
+    th.col-status   { background:#2980b9; width:7%;  }
+    th.col-baseline { background:#3498db; width:25%; }
+    th.col-current  { background:#27ae60; width:25%; }
+    th.col-diff     { background:#e74c3c; width:27%; }
+
+    .report-table tbody td {
+      padding: 12px 14px;
+      border-top: 1px solid #eee;
+      vertical-align: top;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    td.api-name {
+      font-weight: bold;
+      font-size: 12px;
+      color: #2c3e50;
+      background: #f4f6f8;
+      text-align: left;
+      word-break: break-all;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .badge.get    { background:#d0eaf8; color:#1a5f8a; }
+    .badge.post   { background:#fdebd0; color:#784212; }
+    .badge.put    { background:#d5f5e3; color:#186a3b; }
+    .badge.delete { background:#f9ebea; color:#922b21; }
+    .badge.s2xx   { background:#d4edda; color:#155724; }
+    .badge.s4xx   { background:#f8d7da; color:#721c24; }
+    .badge.s5xx   { background:#fff3cd; color:#856404; }
+    .badge.na     { background:#e2e3e5; color:#555; }
+
+    pre.json-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: left;
+      font-size: 11px;
+      max-height: 300px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 0;
+    }
+
+    pre.json-block.diff-block {
+      background: #1a0a0a;
+      color: #e06c75;
+    }
+
+    .match-text {
+      display: inline-block;
+      padding: 12px 20px;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #28a745;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .no-data {
+      padding: 20px 10px;
+      color: #bbb;
+      font-size: 12px;
+      border: 2px dashed #e0e0e0;
+      border-radius: 5px;
+    }
+
+    footer { text-align: center; margin-top: 20px; font-size: 12px; color: #aaa; }
+  </style>
+</head>
+<body>
+
+  <h1>🔌 ReqRes API Comparison Report</h1>
+  <p class="subtitle">Deep response comparison — Baseline vs Current &bull; reqres.in</p>
+
+  <div id="report"></div>
+
+  <footer>API Comparison Tool &bull; Requests + DeepDiff &bull; May 2026</footer>
+
+  <script>
+    const APIS = [
+      { name: "users_list",      method: "GET",
+        baselineUrl: "../responses/users_list/users_list_baseline.json",
+        currentUrl:  "../responses/users_list/users_list_current.json",
+        diffUrl:     "../responses/users_list/users_list_diff.json" },
+
+      { name: "single_user",     method: "GET",
+        baselineUrl: "../responses/single_user/single_user_baseline.json",
+        currentUrl:  "../responses/single_user/single_user_current.json",
+        diffUrl:     "../responses/single_user/single_user_diff.json" },
+
+      { name: "users_not_found", method: "GET",
+        baselineUrl: "../responses/users_not_found/users_not_found_baseline.json",
+        currentUrl:  "../responses/users_not_found/users_not_found_current.json",
+        diffUrl:     "../responses/users_not_found/users_not_found_diff.json" },
+
+      { name: "create_user",     method: "POST",
+        baselineUrl: "../responses/create_user/create_user_baseline.json",
+        currentUrl:  "../responses/create_user/create_user_current.json",
+        diffUrl:     "../responses/create_user/create_user_diff.json" },
+
+      { name: "list_resources",  method: "GET",
+        baselineUrl: "../responses/list_resources/list_resources_baseline.json",
+        currentUrl:  "../responses/list_resources/list_resources_current.json",
+        diffUrl:     "../responses/list_resources/list_resources_diff.json" },
+    ];
+
+    async function fetchJSON(url) {
+      try {
+        const r = await fetch(url + "?t=" + Date.now());
+        if (!r.ok) return null;
+        return await r.json();
+      } catch { return null; }
+    }
+
+    function statusBadge(code) {
+      if (!code) return `<span class="badge na">N/A</span>`;
+      const cls = code >= 500 ? "s5xx" : code >= 400 ? "s4xx" : "s2xx";
+      return `<span class="badge ${cls}">${code}</span>`;
+    }
+
+    function methodBadge(m) {
+      return `<span class="badge ${m.toLowerCase()}">${m}</span>`;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+
+    function jsonBlock(data, isDiff = false) {
+      if (!data) return `<div class="no-data">No data — run tests first</div>`;
+      const json = JSON.stringify(data.body ?? data, null, 2);
+      const cls  = isDiff ? "json-block diff-block" : "json-block";
+      return `<pre class="${cls}">${escapeHtml(json)}</pre>`;
+    }
+
+    async function buildRow(api) {
+      const baseline = await fetchJSON(api.baselineUrl);
+      const current  = await fetchJSON(api.currentUrl);
+      const diff     = await fetchJSON(api.diffUrl);
+
+      const displayStatus = current?.status_code ?? baseline?.status_code ?? null;
+
+      let diffCell;
+      if (!baseline && !current) {
+        diffCell = `<div class="no-data">N/A — run tests first</div>`;
+      } else if (diff) {
+        diffCell = jsonBlock({ body: diff.differences ?? diff }, true);
+      } else {
+        diffCell = `<span class="match-text">✅ JSONs matched</span>`;
+      }
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="api-name">${api.name.replace(/_/g, "_<wbr>")}</td>
+        <td>${methodBadge(api.method)}</td>
+        <td>${statusBadge(displayStatus)}</td>
+        <td>${jsonBlock(baseline)}</td>
+        <td>${jsonBlock(current)}</td>
+        <td>${diffCell}</td>
+      `;
+
+      return { tr, hasDiff: !!diff, hasData: !!(baseline || current) };
+    }
+
+    async function buildReport() {
+      const container = document.getElementById("report");
+
+      const header = document.createElement("div");
+      header.className = "site-header";
+      header.innerHTML = `🌐 ReqRes Endpoints &nbsp;<span style="font-weight:normal;font-size:13px;">https://reqres.in</span>`;
+      const badge = document.createElement("span");
+      badge.className   = "status-banner pending";
+      badge.textContent = "⏳ Loading…";
+      header.appendChild(badge);
+      container.appendChild(header);
+
+      const table = document.createElement("table");
+      table.className = "report-table";
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th class="col-api">API Name</th>
+            <th class="col-method">Method</th>
+            <th class="col-status">Status</th>
+            <th class="col-baseline">📄 Baseline JSON</th>
+            <th class="col-current">🔍 Current JSON</th>
+            <th class="col-diff">⚠️ Differences</th>
+          </tr>
+        </thead>`;
+      const tbody = document.createElement("tbody");
+      table.appendChild(tbody);
+      container.appendChild(table);
+
+      let anyDiff = false, allMissing = true;
+
+      for (const api of APIS) {
+        const { tr, hasDiff, hasData } = await buildRow(api);
+        tbody.appendChild(tr);
+        if (hasData) allMissing = false;
+        if (hasDiff) anyDiff   = true;
+      }
+
+      if (allMissing) {
+        badge.className   = "status-banner pending";
+        badge.textContent = "⚠️ No responses — run tests first";
+      } else if (anyDiff) {
+        badge.className   = "status-banner diff";
+        badge.textContent = "❌ API differences detected";
+      } else {
+        badge.className   = "status-banner match";
+        badge.textContent = "✅ All JSONs matched";
+      }
+    }
+
+    buildReport();
+  </script>
+</body>
+</html>
+

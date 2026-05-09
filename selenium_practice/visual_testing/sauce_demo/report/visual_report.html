@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Visual Testing Report</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      padding: 30px;
+    }
+
+    h1 { text-align: center; font-size: 26px; color: #2c3e50; margin-bottom: 6px; }
+    .subtitle { text-align: center; color: #777; font-size: 13px; margin-bottom: 28px; }
+
+    /* ── Site Section Header ── */
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #2c3e50;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px 8px 0 0;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 36px;
+    }
+
+    /* ── Status Banner ── */
+    .status-banner {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-left: auto;
+    }
+    .status-banner.match   { background:#d4edda; color:#155724; border:1px solid #28a745; }
+    .status-banner.diff    { background:#f8d7da; color:#721c24; border:1px solid #dc3545; }
+    .status-banner.pending { background:#e2e3e5; color:#555;    border:1px solid #aaa;    }
+
+    /* ── Report Table ── */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .report-table thead th {
+      padding: 13px 14px;
+      font-size: 13px;
+      font-weight: bold;
+      color: #fff;
+      text-align: center;
+    }
+
+    th.col-page     { background: #34495e; width: 12%; }
+    th.col-baseline { background: #3498db; width: 29%; }
+    th.col-current  { background: #27ae60; width: 29%; }
+    th.col-diff     { background: #e74c3c; width: 29%; }
+
+    .report-table tbody td {
+      padding: 14px;
+      border-top: 1px solid #eee;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    td.page-name {
+      font-weight: bold;
+      font-size: 13px;
+      color: #2c3e50;
+      background: #f4f6f8;
+      text-transform: capitalize;
+      word-break: break-word;
+    }
+
+    .report-table tbody td img {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: zoom-in;
+      transition: transform 0.2s;
+    }
+    .report-table tbody td img:hover { transform: scale(1.03); }
+
+    .no-image {
+      padding: 24px 10px;
+      color: #bbb;
+      font-size: 12px;
+      border: 2px dashed #e0e0e0;
+      border-radius: 5px;
+    }
+
+    .match-text {
+      display: inline-block;
+      padding: 10px 16px;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #28a745;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    /* ── Lightbox ── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    #lightbox.active { display: flex; }
+    #lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 6px; }
+    #lightbox-close {
+      position: absolute;
+      top: 18px; right: 28px;
+      font-size: 32px; color: #fff;
+      cursor: pointer; font-weight: bold;
+    }
+
+    footer { text-align: center; margin-top: 40px; font-size: 12px; color: #aaa; }
+  </style>
+</head>
+<body>
+
+  <h1>🖼️ Visual Testing Report</h1>
+  <p class="subtitle">Selenium + Pillow &bull; May 2026</p>
+
+  <div id="report"></div>
+
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+    <img id="lightbox-img" src="" alt="Full size"/>
+  </div>
+
+  <footer>Visual Testing Framework &bull; Selenium + Pillow &bull; May 2026</footer>
+
+  <script>
+    /* ── Site / Page config ─────────────────────────────────────── */
+    const SITES = [
+      {
+        name: "SauceDemo",
+        url:  "https://www.saucedemo.com",
+        pages: [
+          {
+            name:     "login page",
+            baseline: "../screenshots/saucedemo/login_page/login_page_baseline.png",
+            current:  "../screenshots/saucedemo/login_page/login_page_current.png",
+            diff:     "../screenshots/saucedemo/login_page/login_page_diff.png"
+          },
+          {
+            name:     "inventory page",
+            baseline: "../screenshots/saucedemo/inventory_page/inventory_page_baseline.png",
+            current:  "../screenshots/saucedemo/inventory_page/inventory_page_current.png",
+            diff:     "../screenshots/saucedemo/inventory_page/inventory_page_diff.png"
+          },
+          {
+            name:     "cart page",
+            baseline: "../screenshots/saucedemo/cart_page/cart_page_baseline.png",
+            current:  "../screenshots/saucedemo/cart_page/cart_page_current.png",
+            diff:     "../screenshots/saucedemo/cart_page/cart_page_diff.png"
+          }
+        ]
+      }
+    ];
+
+    /* ── Try loading an image ───────────────────────────────────── */
+    function loadImg(src, clickable = true) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          img.style.width         = "100%";
+          img.style.borderRadius  = "5px";
+          if (clickable) {
+            img.style.cursor = "zoom-in";
+            img.onclick = () => openLightbox(img.src);
+          }
+          resolve({ ok: true, img });
+        };
+        img.onerror = () => resolve({ ok: false, img: null });
+        img.src = src + "?t=" + Date.now();
+        img.alt = src;
+      });
+    }
+
+    /* ── Build <td> with image or placeholder ───────────────────── */
+    async function imgCell(src, placeholder) {
+      const td = document.createElement("td");
+      const { ok, img } = await loadImg(src);
+      if (ok) td.appendChild(img);
+      else     td.innerHTML = `<div class="no-image">${placeholder}</div>`;
+      return { td, exists: ok };
+    }
+
+    /* ── Build one table row ────────────────────────────────────── */
+    async function buildRow(page) {
+      const tr = document.createElement("tr");
+
+      // Page name
+      const tdName = document.createElement("td");
+      tdName.className   = "page-name";
+      tdName.textContent = page.name;
+      tr.appendChild(tdName);
+
+      // Baseline
+      const { td: tdBase, exists: baseExists } =
+        await imgCell(page.baseline, "No baseline.<br>Run <code>test_capture_baseline</code> first.");
+      tr.appendChild(tdBase);
+
+      // Actual / Current
+      const { td: tdCurr, exists: currExists } =
+        await imgCell(page.current, "No screenshot.<br>Run <code>test_visual_regression</code> first.");
+      tr.appendChild(tdCurr);
+
+      // Diff column
+      const tdDiff = document.createElement("td");
+      if (baseExists && currExists) {
+        const { ok: diffExists, img: diffImg } = await loadImg(page.diff);
+        if (diffExists) {
+          tdDiff.appendChild(diffImg);
+        } else {
+          tdDiff.innerHTML = `<span class="match-text">✅ No visual differences</span>`;
+        }
+      } else {
+        tdDiff.innerHTML = `<div class="no-image">N/A — run tests first</div>`;
+      }
+      tr.appendChild(tdDiff);
+
+      // Check diff existence for status badge
+      const hasDiff = (await loadImg(page.diff, false)).ok;
+      return { tr, baseExists, currExists, hasDiff };
+    }
+
+    /* ── Build one site section ─────────────────────────────────── */
+    async function buildSiteSection(site, container) {
+      // Header bar
+      const header = document.createElement("div");
+      header.className = "site-header";
+      header.innerHTML =
+        `🌐 ${site.name} <span style="font-weight:normal;font-size:13px;">${site.url}</span>`;
+      const badge = document.createElement("span");
+      badge.className   = "status-banner pending";
+      badge.textContent = "⏳ Loading…";
+      header.appendChild(badge);
+      container.appendChild(header);
+
+      // Table
+      const table = document.createElement("table");
+      table.className = "report-table";
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th class="col-page">Page</th>
+            <th class="col-baseline">📷 Baseline Image</th>
+            <th class="col-current">🔍 Actual Image</th>
+            <th class="col-diff">⚠️ Difference Image</th>
+          </tr>
+        </thead>`;
+      const tbody = document.createElement("tbody");
+      table.appendChild(tbody);
+      container.appendChild(table);
+
+      let anyDiff = false, allMissing = true;
+
+      for (const page of site.pages) {
+        const { tr, baseExists, currExists, hasDiff } = await buildRow(page);
+        tbody.appendChild(tr);
+        if (baseExists || currExists) allMissing = false;
+        if (hasDiff) anyDiff = true;
+      }
+
+      // Update badge
+      if (allMissing) {
+        badge.className   = "status-banner pending";
+        badge.textContent = "⚠️ No screenshots — run tests first";
+      } else if (anyDiff) {
+        badge.className   = "status-banner diff";
+        badge.textContent = "❌ Visual differences detected";
+      } else {
+        badge.className   = "status-banner match";
+        badge.textContent = "✅ All pages match";
+      }
+    }
+
+    /* ── Lightbox ───────────────────────────────────────────────── */
+    function openLightbox(src) {
+      document.getElementById("lightbox-img").src = src;
+      document.getElementById("lightbox").classList.add("active");
+    }
+    function closeLightbox() {
+      document.getElementById("lightbox").classList.remove("active");
+    }
+    document.getElementById("lightbox").addEventListener("click", e => {
+      if (e.target === document.getElementById("lightbox")) closeLightbox();
+    });
+
+    /* ── Init ───────────────────────────────────────────────────── */
+    async function init() {
+      const container = document.getElementById("report");
+      for (const site of SITES) await buildSiteSection(site, container);
+    }
+
+    init();
+  </script>
+</body>
+</html>
+
