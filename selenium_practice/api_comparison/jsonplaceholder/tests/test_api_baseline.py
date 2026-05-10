@@ -1,6 +1,6 @@
 import os
 import pytest
-from api_helpers import ENDPOINTS, get_paths, call_api, save_response
+from framework.api_helpers import ENDPOINTS, get_paths, call_api, save_response
 
 
 class TestReqresBaseline:
@@ -22,4 +22,3 @@ class TestReqresBaseline:
 
         assert os.path.exists(baseline), f"Baseline not created for '{api_name}'!"
         print(f"  ✅ Baseline captured for '{api_name}' [HTTP {status_code}]")
-

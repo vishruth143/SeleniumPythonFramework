@@ -19,7 +19,8 @@ ENDPOINTS = [
 ]
 
 # ── Keys to ignore during comparison (dynamic / always-changing fields) ───
-IGNORED_KEYS = {"id"}
+# JSONPlaceholder IDs are fixed/static — no fields need to be ignored
+IGNORED_KEYS = set()
 
 
 def get_paths(api_name):

@@ -1,6 +1,6 @@
 import os
 import pytest
-from api_helpers import ENDPOINTS, get_paths, call_api, save_response, compare_responses
+from framework.api_helpers import ENDPOINTS, get_paths, call_api, save_response, compare_responses
 
 
 class TestReqresComparison:
@@ -27,4 +27,3 @@ class TestReqresComparison:
         assert match, (
             f"API response changed for '{api_name}'! Check diff: {diff}"
         )
-

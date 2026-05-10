@@ -3,93 +3,58 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ReqRes API Comparison Report</title>
+  <title>JSONPlaceholder API Comparison Report</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
-      color: #333;
-      padding: 30px;
-    }
+    body { font-family: Arial, sans-serif; background: #f0f2f5; color: #333; padding: 30px; }
 
     h1 { text-align: center; font-size: 26px; color: #2c3e50; margin-bottom: 6px; }
     .subtitle { text-align: center; color: #777; font-size: 13px; margin-bottom: 28px; }
 
     .site-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #2c3e50;
-      color: #fff;
-      padding: 13px 20px;
-      border-radius: 8px 8px 0 0;
-      font-size: 16px;
-      font-weight: bold;
+      display: flex; align-items: center; gap: 12px;
+      background: #2c3e50; color: #fff;
+      padding: 13px 20px; border-radius: 8px 8px 0 0;
+      font-size: 16px; font-weight: bold;
     }
 
     .status-banner {
-      display: inline-flex;
-      align-items: center;
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-      margin-left: auto;
+      display: inline-flex; align-items: center;
+      padding: 5px 14px; border-radius: 20px;
+      font-size: 13px; font-weight: bold; margin-left: auto;
     }
     .status-banner.match   { background:#d4edda; color:#155724; border:1px solid #28a745; }
     .status-banner.diff    { background:#f8d7da; color:#721c24; border:1px solid #dc3545; }
     .status-banner.pending { background:#e2e3e5; color:#555;    border:1px solid #aaa;    }
 
     .report-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
+      width: 100%; border-collapse: collapse; background: #fff;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      border-radius: 0 0 8px 8px;
-      overflow: hidden;
-      margin-bottom: 30px;
+      border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 30px;
     }
-
     .report-table thead th {
-      padding: 12px 14px;
-      font-size: 13px;
-      font-weight: bold;
-      color: #fff;
-      text-align: center;
+      padding: 12px 14px; font-size: 13px; font-weight: bold; color: #fff; text-align: center;
     }
-
     th.col-api      { background:#34495e; width:10%; text-align:left; padding-left:14px; }
-    th.col-method   { background:#8e44ad; width:6%;  }
-    th.col-status   { background:#2980b9; width:7%;  }
+    th.col-method   { background:#8e44ad; width:6%; }
+    th.col-status   { background:#2980b9; width:7%; }
     th.col-baseline { background:#3498db; width:25%; }
     th.col-current  { background:#27ae60; width:25%; }
     th.col-diff     { background:#e74c3c; width:27%; }
 
     .report-table tbody td {
-      padding: 12px 14px;
-      border-top: 1px solid #eee;
-      vertical-align: top;
-      font-size: 12px;
-      text-align: center;
+      padding: 12px 14px; border-top: 1px solid #eee;
+      vertical-align: top; font-size: 12px; text-align: center;
     }
-
     td.api-name {
-      font-weight: bold;
-      font-size: 12px;
-      color: #2c3e50;
-      background: #f4f6f8;
-      text-align: left;
-      word-break: break-all;
+      font-weight: bold; font-size: 12px; color: #2c3e50;
+      background: #f4f6f8; text-align: left; word-break: break-all;
     }
 
     .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: bold;
+      display: inline-block; padding: 3px 10px;
+      border-radius: 12px; font-size: 12px; font-weight: bold;
     }
     .badge.get    { background:#d0eaf8; color:#1a5f8a; }
     .badge.post   { background:#fdebd0; color:#784212; }
@@ -101,42 +66,64 @@
     .badge.na     { background:#e2e3e5; color:#555; }
 
     pre.json-block {
-      background: #1e1e1e;
-      color: #d4d4d4;
-      padding: 12px;
-      border-radius: 6px;
-      text-align: left;
-      font-size: 11px;
-      max-height: 300px;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-      margin: 0;
-    }
-
-    pre.json-block.diff-block {
-      background: #1a0a0a;
-      color: #e06c75;
+      background: #1e1e1e; color: #d4d4d4;
+      padding: 12px; border-radius: 6px; text-align: left;
+      font-size: 11px; max-height: 300px; overflow: auto;
+      white-space: pre-wrap; word-break: break-word; margin: 0;
     }
 
     .match-text {
-      display: inline-block;
-      padding: 12px 20px;
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #28a745;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: bold;
+      display: inline-block; padding: 12px 20px;
+      background: #d4edda; color: #155724;
+      border: 1px solid #28a745; border-radius: 6px;
+      font-size: 14px; font-weight: bold;
     }
 
     .no-data {
-      padding: 20px 10px;
-      color: #bbb;
-      font-size: 12px;
-      border: 2px dashed #e0e0e0;
-      border-radius: 5px;
+      padding: 20px 10px; color: #bbb; font-size: 12px;
+      border: 2px dashed #e0e0e0; border-radius: 5px;
     }
+
+    /* ── Diff table ── */
+    .diff-wrapper { text-align: left; }
+
+    .diff-summary {
+      font-size: 12px; font-weight: bold; color: #721c24;
+      background: #f8d7da; border: 1px solid #dc3545;
+      border-radius: 5px 5px 0 0; padding: 6px 10px;
+    }
+
+    .diff-inner {
+      border: 1px solid #f5c6cb; border-top: none;
+      border-radius: 0 0 5px 5px; overflow: hidden;
+    }
+
+    .diff-inner table {
+      width: 100%; border-collapse: collapse; font-size: 11px;
+    }
+    .diff-inner th {
+      background: #2c3e50; color: #fff;
+      padding: 5px 8px; font-size: 11px; text-align: left; white-space: nowrap;
+    }
+    .diff-inner td {
+      padding: 5px 8px; border-top: 1px solid #f0f0f0;
+      vertical-align: top; word-break: break-all; background: #fff;
+    }
+    .diff-inner tr:nth-child(even) td { background: #fafafa; }
+
+    .chg {
+      display: inline-block; padding: 2px 7px;
+      border-radius: 10px; font-size: 10px; font-weight: bold; white-space: nowrap;
+    }
+    .chg.removed { background:#f8d7da; color:#721c24; }
+    .chg.added   { background:#d4edda; color:#155724; }
+    .chg.changed { background:#fff3cd; color:#856404; }
+    .chg.status  { background:#d0eaf8; color:#1a5f8a; }
+
+    .v { font-family: monospace; font-size: 11px; }
+    .v-old     { color: #c0392b; }
+    .v-new     { color: #27ae60; }
+    .v-missing { color: #aaa; font-style: italic; }
 
     footer { text-align: center; margin-top: 20px; font-size: 12px; color: #aaa; }
   </style>
@@ -152,40 +139,27 @@
 
   <script>
     const APIS = [
-      { name: "get_all_posts",   method: "GET",
-        baselineUrl: "../responses/get_all_posts/get_all_posts_baseline.json",
-        currentUrl:  "../responses/get_all_posts/get_all_posts_current.json",
-        diffUrl:     "../responses/get_all_posts/get_all_posts_diff.json" },
-
-      { name: "get_single_post", method: "GET",
-        baselineUrl: "../responses/get_single_post/get_single_post_baseline.json",
-        currentUrl:  "../responses/get_single_post/get_single_post_current.json",
-        diffUrl:     "../responses/get_single_post/get_single_post_diff.json" },
-
-      { name: "get_comments",    method: "GET",
-        baselineUrl: "../responses/get_comments/get_comments_baseline.json",
-        currentUrl:  "../responses/get_comments/get_comments_current.json",
-        diffUrl:     "../responses/get_comments/get_comments_diff.json" },
-
-      { name: "get_all_users",   method: "GET",
-        baselineUrl: "../responses/get_all_users/get_all_users_baseline.json",
-        currentUrl:  "../responses/get_all_users/get_all_users_current.json",
-        diffUrl:     "../responses/get_all_users/get_all_users_diff.json" },
-
-      { name: "create_post",     method: "POST",
-        baselineUrl: "../responses/create_post/create_post_baseline.json",
-        currentUrl:  "../responses/create_post/create_post_current.json",
-        diffUrl:     "../responses/create_post/create_post_diff.json" },
-
-      { name: "get_todos",       method: "GET",
-        baselineUrl: "../responses/get_todos/get_todos_baseline.json",
-        currentUrl:  "../responses/get_todos/get_todos_current.json",
-        diffUrl:     "../responses/get_todos/get_todos_diff.json" },
-
-      { name: "get_albums",      method: "GET",
-        baselineUrl: "../responses/get_albums/get_albums_baseline.json",
-        currentUrl:  "../responses/get_albums/get_albums_current.json",
-        diffUrl:     "../responses/get_albums/get_albums_diff.json" },
+      { name:"get_all_posts",   method:"GET",
+        baselineUrl:"../responses/get_all_posts/get_all_posts_baseline.json",
+        currentUrl: "../responses/get_all_posts/get_all_posts_current.json" },
+      { name:"get_single_post", method:"GET",
+        baselineUrl:"../responses/get_single_post/get_single_post_baseline.json",
+        currentUrl: "../responses/get_single_post/get_single_post_current.json" },
+      { name:"get_comments",    method:"GET",
+        baselineUrl:"../responses/get_comments/get_comments_baseline.json",
+        currentUrl: "../responses/get_comments/get_comments_current.json" },
+      { name:"get_all_users",   method:"GET",
+        baselineUrl:"../responses/get_all_users/get_all_users_baseline.json",
+        currentUrl: "../responses/get_all_users/get_all_users_current.json" },
+      { name:"create_post",     method:"POST",
+        baselineUrl:"../responses/create_post/create_post_baseline.json",
+        currentUrl: "../responses/create_post/create_post_current.json" },
+      { name:"get_todos",       method:"GET",
+        baselineUrl:"../responses/get_todos/get_todos_baseline.json",
+        currentUrl: "../responses/get_todos/get_todos_current.json" },
+      { name:"get_albums",      method:"GET",
+        baselineUrl:"../responses/get_albums/get_albums_baseline.json",
+        currentUrl: "../responses/get_albums/get_albums_current.json" },
     ];
 
     async function fetchJSON(url) {
@@ -196,54 +170,155 @@
       } catch { return null; }
     }
 
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+
     function statusBadge(code) {
       if (!code) return `<span class="badge na">N/A</span>`;
       const cls = code >= 500 ? "s5xx" : code >= 400 ? "s4xx" : "s2xx";
       return `<span class="badge ${cls}">${code}</span>`;
     }
-
     function methodBadge(m) {
       return `<span class="badge ${m.toLowerCase()}">${m}</span>`;
     }
 
-    function escapeHtml(str) {
-      return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    function jsonBlock(data) {
+      if (!data) return `<div class="no-data">No data — run tests first</div>`;
+      return `<pre class="json-block">${escapeHtml(JSON.stringify(data.body ?? data, null, 2))}</pre>`;
     }
 
-    function jsonBlock(data, isDiff = false) {
-      if (!data) return `<div class="no-data">No data — run tests first</div>`;
-      const json = JSON.stringify(data.body ?? data, null, 2);
-      const cls  = isDiff ? "json-block diff-block" : "json-block";
-      return `<pre class="${cls}">${escapeHtml(json)}</pre>`;
+    /* ── Recursive deep diff → [{path, type, baseline, current}] ──
+       Arrays of objects are matched by "id" (order-independent).
+       Plain value arrays fall back to sorted-string comparison.    ── */
+    function deepDiff(a, b, path = "") {
+      const out = [];
+
+      if (typeof a !== typeof b || Array.isArray(a) !== Array.isArray(b)) {
+        out.push({ path: path||"root", type:"changed", baseline:a, current:b });
+        return out;
+      }
+      if (a === null || b === null || typeof a !== "object") {
+        if (a !== b) out.push({ path: path||"root", type:"changed", baseline:a, current:b });
+        return out;
+      }
+
+      if (Array.isArray(a)) {
+        // ── Order-independent array comparison ──────────────────────
+        const aHasIds = a.length > 0 && a.every(x => x && typeof x === "object" && "id" in x);
+        const bHasIds = b.length > 0 && b.every(x => x && typeof x === "object" && "id" in x);
+
+        if (aHasIds && bHasIds) {
+          // Match by id
+          const aMap = new Map(a.map(x => [String(x.id), x]));
+          const bMap = new Map(b.map(x => [String(x.id), x]));
+          const allIds = new Set([...aMap.keys(), ...bMap.keys()]);
+          for (const id of allIds) {
+            const p = `${path}[id=${id}]`;
+            if      (!aMap.has(id)) out.push({ path:p, type:"added",   baseline:undefined, current:bMap.get(id) });
+            else if (!bMap.has(id)) out.push({ path:p, type:"removed", baseline:aMap.get(id), current:undefined });
+            else                    out.push(...deepDiff(aMap.get(id), bMap.get(id), p));
+          }
+        } else {
+          // Plain value arrays — compare as sorted JSON strings (order-independent)
+          const aStr = JSON.stringify([...a].sort((x,y) => JSON.stringify(x) > JSON.stringify(y) ? 1 : -1));
+          const bStr = JSON.stringify([...b].sort((x,y) => JSON.stringify(x) > JSON.stringify(y) ? 1 : -1));
+          if (aStr !== bStr) {
+            out.push({ path: path||"root", type:"changed", baseline:a, current:b });
+          }
+        }
+        return out;
+      }
+
+      // Objects
+      const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+      for (const k of keys) {
+        const p = path ? `${path}.${k}` : k;
+        if      (!(k in a)) out.push({ path:p, type:"added",   baseline:undefined, current:b[k] });
+        else if (!(k in b)) out.push({ path:p, type:"removed", baseline:a[k],      current:undefined });
+        else                out.push(...deepDiff(a[k], b[k], p));
+      }
+      return out;
+    }
+
+    /* ── Format a value for display ── */
+    function fmtVal(v, cls) {
+      if (v === undefined) return `<span class="v-missing">(missing)</span>`;
+      if (v === null)      return `<span class="v ${cls}">null</span>`;
+      if (typeof v === "object") return `<span class="v ${cls}">${escapeHtml(JSON.stringify(v))}</span>`;
+      return `<span class="v ${cls}">${escapeHtml(String(v))}</span>`;
+    }
+
+    /* ── Build the Differences cell ── */
+    function buildDiffCell(baseline, current) {
+      if (!baseline && !current)
+        return { html:`<div class="no-data">N/A — run tests first</div>`, hasDiff:false };
+      if (!baseline || !current)
+        return { html:`<div class="no-data">Missing baseline or current — run tests</div>`, hasDiff:false };
+
+      const diffs = [];
+
+      // Status code
+      if (baseline.status_code !== current.status_code)
+        diffs.push({ path:"status_code", type:"status", baseline:baseline.status_code, current:current.status_code });
+
+      // Body
+      diffs.push(...deepDiff(baseline.body ?? {}, current.body ?? {}));
+
+      if (diffs.length === 0)
+        return { html:`<span class="match-text">✅ JSONs matched</span>`, hasDiff:false };
+
+      // Summary line
+      const cnt = { removed:0, added:0, changed:0, status:0 };
+      diffs.forEach(d => cnt[d.type] = (cnt[d.type]||0) + 1);
+      const parts = [];
+      if (cnt.status)  parts.push(`${cnt.status} status change`);
+      if (cnt.removed) parts.push(`${cnt.removed} removed field${cnt.removed>1?"s":""}`);
+      if (cnt.added)   parts.push(`${cnt.added} added field${cnt.added>1?"s":""}`);
+      if (cnt.changed) parts.push(`${cnt.changed} changed value${cnt.changed>1?"s":""}`);
+
+      const label = { removed:"❌ Removed", added:"✅ Added", changed:"⚠️ Changed", status:"🔄 Status" };
+
+      let rows = "";
+      for (const d of diffs) {
+        rows += `<tr>
+          <td><span class="chg ${d.type}">${label[d.type]}</span></td>
+          <td><code>${escapeHtml(d.path)}</code></td>
+          <td>${fmtVal(d.baseline, "v-old")}</td>
+          <td>${fmtVal(d.current,  "v-new")}</td>
+        </tr>`;
+      }
+
+      const html = `
+        <div class="diff-wrapper">
+          <div class="diff-summary">⚠️ ${diffs.length} difference${diffs.length>1?"s":""} — ${parts.join(", ")}</div>
+          <div class="diff-inner">
+            <table>
+              <thead><tr><th>Change</th><th>Field / Path</th><th>Baseline Value</th><th>Current Value</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </div>`;
+
+      return { html, hasDiff:true };
     }
 
     async function buildRow(api) {
       const baseline = await fetchJSON(api.baselineUrl);
       const current  = await fetchJSON(api.currentUrl);
-      const diff     = await fetchJSON(api.diffUrl);
-
       const displayStatus = current?.status_code ?? baseline?.status_code ?? null;
-
-      let diffCell;
-      if (!baseline && !current) {
-        diffCell = `<div class="no-data">N/A — run tests first</div>`;
-      } else if (diff) {
-        diffCell = jsonBlock({ body: diff.differences ?? diff }, true);
-      } else {
-        diffCell = `<span class="match-text">✅ JSONs matched</span>`;
-      }
+      const { html: diffHtml, hasDiff } = buildDiffCell(baseline, current);
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td class="api-name">${api.name.replace(/_/g, "_<wbr>")}</td>
+        <td class="api-name">${api.name.replace(/_/g,"_<wbr>")}</td>
         <td>${methodBadge(api.method)}</td>
         <td>${statusBadge(displayStatus)}</td>
         <td>${jsonBlock(baseline)}</td>
         <td>${jsonBlock(current)}</td>
-        <td>${diffCell}</td>
+        <td>${diffHtml}</td>
       `;
-
-      return { tr, hasDiff: !!diff, hasData: !!(baseline || current) };
+      return { tr, hasDiff, hasData:!!(baseline||current) };
     }
 
     async function buildReport() {
@@ -261,22 +336,19 @@
       const table = document.createElement("table");
       table.className = "report-table";
       table.innerHTML = `
-        <thead>
-          <tr>
-            <th class="col-api">API Name</th>
-            <th class="col-method">Method</th>
-            <th class="col-status">Status</th>
-            <th class="col-baseline">📄 Baseline JSON</th>
-            <th class="col-current">🔍 Current JSON</th>
-            <th class="col-diff">⚠️ Differences</th>
-          </tr>
-        </thead>`;
+        <thead><tr>
+          <th class="col-api">API Name</th>
+          <th class="col-method">Method</th>
+          <th class="col-status">Status</th>
+          <th class="col-baseline">📄 Baseline JSON</th>
+          <th class="col-current">🔍 Current JSON</th>
+          <th class="col-diff">⚠️ Differences</th>
+        </tr></thead>`;
       const tbody = document.createElement("tbody");
       table.appendChild(tbody);
       container.appendChild(table);
 
       let anyDiff = false, allMissing = true;
-
       for (const api of APIS) {
         const { tr, hasDiff, hasData } = await buildRow(api);
         tbody.appendChild(tr);
